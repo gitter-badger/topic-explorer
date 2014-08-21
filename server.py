@@ -5,19 +5,19 @@ from StringIO import StringIO
 from vsm.corpus import Corpus
 from vsm.model.beaglecomposite import BeagleComposite
 from vsm.viewer.beagleviewer import BeagleViewer
-from vsm.model.ldacgsmulti import LdaCgsMulti as LCM
+from vsm.model.ldagibbs import LDAGibbs as LCM
 from vsm.viewer.ldagibbsviewer import LDAGibbsViewer as LDAViewer
 
 from bottle import request, response, route, run, static_file
 
-path = '/var/inphosemantics/data/20140801/sep/vsm-data/'
+path = '/home/yihzhang/vsm/finished_models/'
 
-lda_c = Corpus.load(path + 'sep-nltk-freq1.npz')
+lda_c = Corpus.load(path + 'abstracts_only_animal_consciousness.npz')
 lda_m = None
 lda_v = None
 def load_model(k):
     global lda_m, lda_v
-    lda_m = LCM.load(path + 'sep-nltk-freq1-article-LDA-K%s.npz' % k)
+    lda_m = LCM.load(path + 'abstracts_only_animal_consciousness_model.npz')
     lda_v = LDAViewer(lda_c, lda_m)
 
 

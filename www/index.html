@@ -158,15 +158,6 @@ letter-spacing: -1px;
   </div>
   <div class="btn-group">
     <button type="submit" id="submit" class="btn">Visualize</button>
-    <a class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></a>
-    <ul class="dropdown-menu">
-    <li><a href="javascript:visualize(20)">20 Topics</a></li>
-    <li><a href="javascript:visualize(40)">40 Topics</a></li>
-    <li><a href="javascript:visualize(60)">60 Topics</a></li>
-    <li><a href="javascript:visualize(80)">80 Topics</a></li>
-    <li><a href="javascript:visualize(100)">100 Topics</a></li>
-    <li><a href="javascript:visualize(120)">120 Topics</a></li>
-    </ul>
   </div>
   <a href="https://twitter.com/share" class="twitter-share-button pull-right" style="padding-top: 10px" data-text="InPhO Topic Explorer" data-via="JaimieMurdock" data-size="large" data-hashtags="dighum" data-counturl="inphodata.cogs.indiana.edu">Tweet</a>
   <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
@@ -221,7 +212,6 @@ var maxRows = 25;
 var minCols = 2;
 
 var docid = inpho.util.getValueForURLParam('doc') || 'epistemology';
-docid = docid.toLowerCase();
 $('#doc').val(docid);
 $('.twitter-share-button').attr('data-text', "What's similar to " +docid+"? Discover with the #InPhO Topic Explorer");
 var roottopic = inpho.util.getValueForURLParam('topic') || null;
