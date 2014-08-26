@@ -377,23 +377,14 @@ d3.json(url, function(error, data) {
           .removeAttr('font-weight'); 
         svg.selectAll(".doc").filter(function(doc,i) { return doc.doc == d}).attr("class", "doc"); });
     ticks.append("svg:image")
-        .attr("xlink:href","/img/sep.png")
+        .attr("xlink:href","/img/philpapers.gif")
         .attr("width", 18)
         .attr("height",18)
         .attr("x", -margin.left + 5)
         .attr("y", -9)
         //.attr("x", -9)
         .attr("class", "sepIcon")
-        .on("click", function(d) { window.open("http://plato.stanford.edu/entires/" + d, "_blank");});
-    ticks.append("svg:image")
-        .attr("xlink:href","/img/inpho.png")
-        .attr("width", 18)
-        .attr("height",18)
-        .attr("x", -margin.left + 5 + 18)
-        .attr("y", -9)
-        //.attr("x", -9)
-        .attr("class", "inphoIcon")
-        .on("click", function(d) { window.open("https://inpho.cogs.indiana.edu/entity?redirect=True&sep=" + d, "_blank");});
+        .on("click", function(d) { window.open("http://philpapers.org/rec/" + d, "_blank");});
 
   // draw total bar
   var doc = svg.selectAll("doc")
@@ -405,15 +396,13 @@ d3.json(url, function(error, data) {
           $("text:contains(" + d.doc +")")
             .filter(function() {return $(this).text().trim() == d.doc })
             .attr("font-weight", "bold")
-            .next(".sepIcon").css('opacity', '1.0')
-            .next(".inphoIcon").css('opacity', '1.0');
+            .next(".sepIcon").css('opacity', '1.0');
         })
       .on("mouseout", function(d) {
           $("text:contains(" + d.doc +")")
             .filter(function() {return $(this).text().trim() == d.doc })
             .attr("font-weight", "normal")
-            .next(".sepIcon").css('opacity', '')
-            .next(".inphoIcon").css('opacity', '');
+            .next(".sepIcon").css('opacity', '');
         });
 
   // Draw topic bars
@@ -536,8 +525,7 @@ d3.json(url, function(error, data) {
       $('#controls').css({'position': 'fixed', 'top' : legendHeight + heightFac});
     }}
    
-$('.inphoIcon').tooltip({placement: 'top', title: 'Click to see more information<br /> at the InPhO Project.', container: 'body', html: true, animation: false});
-$('.sepIcon').tooltip({placement: 'top', title: 'Click for the SEP article.', container: 'body', html: true, animation: false});
+$('.sepIcon').tooltip({placement: 'top', title: 'Click for the PhilPapers record.', container: 'body', html: true, animation: false});
 }); });
 
   function scaleTopics() {
