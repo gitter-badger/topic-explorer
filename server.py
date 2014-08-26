@@ -89,7 +89,7 @@ def doc_topics(doc_id, N=40):
     for doc, prob in data:
         if doc != 'sample.txt':
             js.append({'doc' : doc, 'prob' : prob,
-                'topics' : dict([(t, p) for t,p in lda_v.doc_topics(doc)])})
+                'topics' : dict([(str(t), p) for t,p in lda_v.doc_topics(doc)])})
 
     return json.dumps(js)
 
