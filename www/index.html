@@ -8,6 +8,7 @@
 <script src="lib/d3.v3.min.js"></script>
 <script src="lib/mustache.js"></script>
 <script src="lib/inpho/util.js"></script>
+<script src="htrc.js"></script>
 <!--<script src="sep.js"></script>-->
 <link rel="stylesheet" type="text/css" href="lib/bootstrap-2.3.2/css/bootstrap.min.css" />
 <!--<link rel="stylesheet" type="text/css" href="style.css" />-->
@@ -149,9 +150,9 @@ letter-spacing: -1px;
   <div class="span12">
   <h1><a href="https://inpho.cogs.indiana.edu"><span class="logo-word">InPhO</span></a> Topic Explorer</h1>
   <!--<h2 class="title"></h2>-->
-  <p>This visualization shows the similarity of entries in the SEP to <span class="title"></span>.  The color bands within each article's row show the topic distribution within that article, and the relative sizes of each band indicates the weight of that topic in the article.  The combined width of each row indicates the <a href="http://en.wikipedia.org/wiki/Jensen–Shannon_divergence">Jensen-Shannon divergence</a> to <span class="title"></span>.  Each topic's label and color is arbitrarily assigned, but is consistent across articles in the browser.</p>
-  <p>Display options include topic normalization, alphabetical sort and topic sort. By normalizing topics, the combined width of each bar expands so that topic weights per document can be compared. By clicking a topic, the documents will reorder acoording to that topic's weight and topic bars will reorder according to the topic weights in the highest weighted document. When a topic is selected, clicking "Top Documents for [Topic]" will take you to a new page showing the most similar documents to that topic's word distribution. The original sort order can be restored with the "Reset Topic Sort" button.</p>
-  
+  <p>This visualization shows the similarity of other volumes in the HTRC to the volume <span class="title"></span>.  The color bands within each article's row show the topic distribution within that article, and the relative sizes of each band indicates the weight of that topic in the article.  The full width of each row indicates the similarity to <span class="title"></span>.  Each topic's label and color is arbitrarily assigned, but is consistent across articles in the browser.</p>
+  <p>Display options include topic normalization, alphabetical sort and topic sort. By normalizing topics, the full width of each bar expands and topic weights per document can be compared. By clicking a topic, the documents will reorder acoording to that topic's weight and topic bars will reorder according to the topic weights in the highest weighted document.</p>
+  <p>Clicking the HathiTrust icon that appears when a row is highlighted displays the title of that volume, along with links to the full-text in HathiTrust and catalog records in several linked data repositories.</p>
   <p>The underlying dataset was generated using the <a href="http://github.com/inpho/vsm" target="_blank">InPhO VSM module's</a> LDA implementation.  See <a href="http://en.wikipedia.org/wiki/Latent_Dirichlet_allocation" target="_blank">Wikipedia: Latent Dirichlet Allocation</a> for more on the LDA topic modeling approach or <a href="http://dl.acm.org/citation.cfm?id=2133826" target="_blank">"Probabilistic Topic Models" (Blei, 2012)</a> for a recent review.</p>
   <p><a href="http://github.com/inpho/topic-explorer/" target="_blank">Source code</a> and <a href="http://github.com/inpho/topic-explorer/issues/" target="_blank">issue tracking</a> for this page available at <a href="http://github.com/inpho/topic-explorer/" target="_blank">GitHub</a>. Contact Jaimie Murdock (<span class="iumail">jammurdo</span>) with further comments.</p>
   <script>var mail = $('.iumail').text();
@@ -204,11 +205,11 @@ if (roottopic) {
 }
 
 function visualize(k) {
-  var url = "http://inphodata.cogs.indiana.edu:16";
+  var url = "http://inphodata.cogs.indiana.edu:8"
   if (k < 100) url += "0" + k;
   else url += k;
 
-  url += "?doc=" + encodeURIComponent($("#hidden_id").val() || docid) ;
+  url += "?doc=" + encodeURIComponent($("#doc").val() || docid) ;
   window.location = url;
 }
 
@@ -273,7 +274,22 @@ $.getJSON('/docs.json', function(data) {
 var maxRows = 25;
 var minCols = 2;
 
-var margin = {top: 80, right: 40, bottom: 20, left: 75},
+var docid = inpho.util.getValueForURLParam('doc') || null;
+if (docid) {
+  docid = decodeURIComponent(docid);
+  docid = docid.toLowerCase();
+  $('#doc').val(docid);
+  $('.twitter-share-button').attr('data-text', "What's similar to " +docid+"? Discover with the #InPhO Topic Explorer");
+}
+var roottopic = inpho.util.getValueForURLParam('topic') || null;
+if (roottopic) {
+  $('.title').html('Topic ' + roottopic);
+  $('.twitter-share-button').attr('data-text', "Check out topic "+ roottopic+" at the #InPhO Topic Explorer!");
+} else {
+  $('.title').html('<a href="http://hdl.handle.net/2027/'+docid+'" target="_blank" title="HathiTrust: '+docid+'">'+docid+'</a>');
+}
+
+var margin = {top: 80, right: 40, bottom: 20, left: 200},
     width = 960 - margin.left - margin.right,
     height = 600 - margin.top - margin.bottom;
 
@@ -418,8 +434,8 @@ d3.json(url, function(error, data) {
       .attr("class", "y axis")
       .call(yAxis)
       .selectAll("text")
-      .attr("class", function(d) { return (d == docid && roottopic != null) ? "primary" : "" })
-      .on("click", function(d) { window.location.href = "/?doc=" + d;})
+      .attr("class", function(d) { return (d == docid && roottopic == null) ? "primary" : "" })
+      .on("click", function(d) { window.location.href = "/?doc=" + encodeURIComponent(d);});
 
   svg.select(".y.axis").selectAll("g")
       .insert("rect", ":first-child")
@@ -445,32 +461,15 @@ d3.json(url, function(error, data) {
           .attr("class", function(d) { return d.doc == docid ? "doc primary" : "doc"}); 
         });
     ticks.append("svg:image")
-        .attr("xlink:href","/img/inpho.png")
+        .attr("xlink:href","/img/htrc.png")
         .attr("width", 18)
         .attr("height",18)
         .attr("x", -margin.left + 5)
         .attr("y", -9)
         //.attr("x", -9)
-        .attr("class", "inphoIcon")
-        .on("click", function(d) { window.open("https://inpho.cogs.indiana.edu/entity?redirect=True&sep=" + d, "_blank");});
-    ticks.append("svg:image")
-        .attr("xlink:href","/img/sep.png")
-        .attr("width", 18)
-        .attr("height",18)
-        .attr("x", -margin.left + 5 + 20)
-        .attr("y", -9)
-        //.attr("x", -9)
-        .attr("class", "sepIcon")
-        .on("click", function(d) { window.open("http://plato.stanford.edu/entires/" + d, "_blank");});
-    ticks.append("svg:image")
-        .attr("xlink:href","/img/link.png")
-        .attr("width", 18)
-        .attr("height",18)
-        .attr("x", -margin.left + 5 + 20 + 20)
-        .attr("y", -9)
-        //.attr("x", -9)
-        .attr("class", "linkIcon")
-        .on("click", function(d) { window.location.href = "/?doc=" + encodeURIComponent(d);});
+        .attr("class", "sepIcon htrc")
+        .attr("data-htrc-id", function(d) { return d; })
+        .attr("onclick", function(d) { return (d) ? "htrc.popover(this)" : ""; });
 
   // draw total bar
   var doc = svg.selectAll("doc")
@@ -626,8 +625,7 @@ d3.json(url, function(error, data) {
     }}
    
 $('.inphoIcon').tooltip({placement: 'top', title: 'Click to see more information<br /> at the InPhO Project.', container: 'body', html: true, animation: false});
-$('.sepIcon').tooltip({placement: 'top', title: 'Click for the SEP article.', container: 'body', html: true, animation: false});
-$('.linkIcon').tooltip({placement: 'top', title: 'Click to refocus the Topic Explorer on this document.', container: 'body', html: true, animation: false});
+$('.sepIcon').tooltip({placement: 'top', title: 'Click for the HathiTrust Details.', container: 'body', html: true, animation: false});
 }); });
 
   function scaleTopics() {
