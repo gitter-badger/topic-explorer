@@ -11,14 +11,14 @@ from vsm.viewer.ldagibbsviewer import LDAGibbsViewer as LDAViewer
 
 from bottle import request, response, route, run, static_file
 
-path = '/var/inphosemantics/data/20140417/darwin/vsm-data/' 
+path = '/var/inphosemantics/data/20140923/darwin/models/' 
 
-lda_c = Corpus.load(path + 'darwin-fr2eng-nltk-freq5.npz')
+lda_c = Corpus.load(path + 'cambridge-nltk-freq3.npz')
 lda_m = None
 lda_v = None
 def load_model(k):
     global lda_m, lda_v
-    lda_m = LCM.load(path + 'darwin-fr2eng-nltk-freq5-LDA-K%d-500.npz' % k)
+    lda_m = LCM.load(path + 'cambridge-nltk-freq3-LDA-K%d-200.npz' % k)
     lda_v = LDAViewer(lda_c, lda_m)
 
 def _cache_date(days=1):
