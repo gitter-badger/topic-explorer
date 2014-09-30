@@ -211,7 +211,7 @@ $.getJSON('/docs.json', function(data) {
 var maxRows = 25;
 var minCols = 2;
 
-var docid = inpho.util.getValueForURLParam('doc') || 'epistemology';
+var docid = inpho.util.getValueForURLParam('doc') || 'animal_consciousness.txt';
 $('#doc').val(docid);
 $('.twitter-share-button').attr('data-text', "What's similar to " +docid+"? Discover with the #InPhO Topic Explorer");
 var roottopic = inpho.util.getValueForURLParam('topic') || null;
