@@ -64,12 +64,16 @@ def topic_json(topic_no, N=40):
     else:
         data = lda_v.sim_top_doc([int(topic_no)])[N:]
         data = reversed(data)
+    
+    md = lda_c.view_metadata('book')
+    ids = md['book_label']
+    labels = htrc_label_fn_1315(md)
+    label = dict(zip(ids,labels))
 
-    labels = sep.get_titles()
     js = []
     for doc, prob in data:
         if doc != 'sample.txt':
-            js.append({'doc' : doc, 'prob' : prob,
+            js.append({'doc' : doc, 'label': label[doc], 'prob' : 1-prob,
                 'topics' : dict([(str(t), p) for t,p in lda_v.doc_topics(doc)])})
 
     return json.dumps(js)
@@ -89,12 +93,15 @@ def doc_topics(doc_id, N=40):
         data = lda_v.sim_doc_doc(doc_id)[N:]
         data = reversed(data)
     
-    labels = sep.get_titles()
+    md = lda_c.view_metadata('book')
+    ids = md['book_label']
+    labels = htrc_label_fn_1315(md)
+    label = dict(zip(ids,labels))
 
     js = []
     for doc, prob in data:
         if doc != 'sample.txt':
-            js.append({'doc' : doc, 'prob' : prob,
+            js.append({'doc' : doc, 'label': label[doc], 'prob' : 1-prob,
                 'topics' : dict([(str(t), p) for t,p in lda_v.doc_topics(doc)])})
 
     return json.dumps(js)
