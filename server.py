@@ -118,7 +118,15 @@ def docs():
     response.content_type = 'application/json; charset=UTF8'
     response.set_header('Expires', _cache_date())
 
-    js = [label for label in lda_c.view_metadata('book')['book_label'] if label != 'sample.txt']
+    md = lda_c.view_metadata('book')
+    ids = md['book_label']
+    labels = htrc_label_fn_1315(md)
+    js = list()
+    for id, title in zip(ids,labels):
+        js.append({
+            'id': id,
+            'label' : title
+        })
 
     return json.dumps(js)
 

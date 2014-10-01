@@ -207,10 +207,11 @@ function visualize(k) {
   if (k < 100) url += "0" + k;
   else url += k;
 
-  url += "?doc=" + encodeURIComponent($("#doc").val() || docid) ;
+  url += "?doc=" + encodeURIComponent($("#hidden_id").val() || docid) ;
   window.location = url;
 }
 
+var labels, mapped;
 $.getJSON('/docs.json', function(data) {
   $(".typeahead").typeahead({items: 12,
     source: function(query, process) {
@@ -276,7 +277,7 @@ var docid = inpho.util.getValueForURLParam('doc') || null;
 if (docid) {
   docid = decodeURIComponent(docid);
   docid = docid.toLowerCase();
-  $('#doc').val(docid);
+  $('#hidden_id').val(docid);
   $('.twitter-share-button').attr('data-text', "What's similar to " +docid+"? Discover with the #InPhO Topic Explorer");
 }
 var roottopic = inpho.util.getValueForURLParam('topic') || null;
