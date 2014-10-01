@@ -1,4 +1,5 @@
 import csv
+from datetime import datetime, timedelta
 import json
 from StringIO import StringIO
 
@@ -19,6 +20,10 @@ def load_model(k):
     global lda_m, lda_v
     lda_m = LCM.load(path + 'sep-nltk-freq1-article-LDA-K%s.npz' % k)
     lda_v = LDAViewer(lda_c, lda_m)
+
+def _cache_date(days=1):
+    time = datetime.now() + timedelta(days=days)
+    return time.strftime("%a, %d %b %Y %I:%M:%S GMT")
 
 
 
@@ -104,6 +109,7 @@ def doc_topics(sep_dir, N=40):
 @route('/topics.json')
 def topics():
     response.content_type = 'application/json; charset=UTF8'
+    response.set_header('Expires', _cache_date())
 
     data = lda_v.topics()
 
@@ -117,6 +123,7 @@ def topics():
 @route('/docs.json')
 def docs():
     response.content_type = 'application/json; charset=UTF8'
+    response.set_header('Expires', _cache_date())
 
     data = lda_v.topics()
     js = [label[:-4] for label in lda_c.view_metadata('article')['article_label'] if label != 'sample.txt']
