@@ -172,8 +172,6 @@ letter-spacing: -1px;
     <li><a href="javascript:visualize(40)">40 Topics</a></li>
     <li><a href="javascript:visualize(60)">60 Topics</a></li>
     <li><a href="javascript:visualize(80)">80 Topics</a></li>
-    <li><a href="javascript:visualize(100)">100 Topics</a></li>
-    <li><a href="javascript:visualize(120)">120 Topics</a></li>
     </ul>
   </div>
   <a href="https://twitter.com/share" class="twitter-share-button pull-right" style="padding-top: 10px" data-text="InPhO Topic Explorer" data-via="JaimieMurdock" data-size="large" data-hashtags="dighum" data-counturl="inphodata.cogs.indiana.edu">Tweet</a>
@@ -205,7 +203,7 @@ if (roottopic) {
 }
 
 function visualize(k) {
-  var url = "http://inphodata.cogs.indiana.edu:8"
+  var url = "http://inphodata.cogs.indiana.edu:17"
   if (k < 100) url += "0" + k;
   else url += k;
 

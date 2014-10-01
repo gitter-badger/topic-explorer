@@ -8,17 +8,17 @@ from vsm.model.beaglecomposite import BeagleComposite
 from vsm.viewer.beagleviewer import BeagleViewer
 from vsm.model.ldacgsmulti import LdaCgsMulti as LCM
 from vsm.viewer.ldagibbsviewer import LDAGibbsViewer as LDAViewer
+from vsm.extensions.htrc import htrc_label_fn_1315
 
 from bottle import request, response, route, run, static_file
 
-path = '/var/inphosemantics/data/20140923/darwin/models/' 
-
-lda_c = Corpus.load(path + 'cambridge-nltk-freq3.npz')
+path ='/var/inphosemantics/data/20130101/htrc-anthropomorphism-1315/vsm-data/hathi-1315-nltk-freq3'
+lda_c = Corpus.load(path + '.npz')
 lda_m = None
 lda_v = None
 def load_model(k):
     global lda_m, lda_v
-    lda_m = LCM.load(path + 'cambridge-nltk-freq3-LDA-K%d-200.npz' % k)
+    lda_m = LCM.load(path + '-LDA-K%d-500.npz' % k)
     lda_v = LDAViewer(lda_c, lda_m)
 
 def _cache_date(days=1):
@@ -140,7 +140,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.port is None: 
-        port = '8%03d' % (args.k + 1)
+        port = '17%03d' % (args.k)
     else:
         port = args.port
 
