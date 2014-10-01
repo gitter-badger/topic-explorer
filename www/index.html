@@ -12,6 +12,9 @@
 <link rel="stylesheet" type="text/css" href="lib/bootstrap-2.3.2/css/bootstrap.min.css" />
 <!--<link rel="stylesheet" type="text/css" href="style.css" />-->
 <style>
+body {
+  margin-top: 150px;
+  }
 .bar {
     fill: steelblue;
 }
@@ -29,6 +32,7 @@ rect.hover {
   opacity: 0.8;
 }
 .doc:hover rect, .doc.hover rect {
+  cursor: crosshair;
   opacity: 1.0;
 }
 rect:hover {
@@ -149,8 +153,8 @@ d3.json(url, function(error, data) {
                             animation: false, placement: 'top'});
     
     $('#status .bar').addClass('bar-success').css('width', '100%').text("Complete!");
-    $('#status').hide();
-    $('#main').show()
+    setTimeout(function() {$('#status').hide()}, 250);
+    setTimeout(function() {$('#main').show()}, 250);
 
 }); });
 
