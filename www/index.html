@@ -17,11 +17,13 @@
   visibility: hidden;
 }
 .y.axis g .sepIcon,
+.y.axis g .htrcIcon,
 .y.axis g .linkIcon,
 .y.axis g .inphoIcon {
   opacity: 0;
   }
 .y.axis g:hover .inphoIcon,
+.y.axis g:hover .htrcIcon,
 .y.axis g:hover .linkIcon,
 .y.axis g:hover .sepIcon {
   opacity: 1.0;
@@ -36,6 +38,7 @@
   opacity: 0 !important;
 }
 .y.axis rect:hover .sepIcon,
+.y.axis rect:hover .htrcIcon,
 .y.axis rect:hover .linkIcon,
 .y.axis rect:hover .inphoIcon {
   opacity: 1 !important;
@@ -454,7 +457,7 @@ d3.json(url, function(error, data) {
         .attr("x", -margin.left + 5)
         .attr("y", -9)
         //.attr("x", -9)
-        .attr("class", "sepIcon htrc")
+        .attr("class", "htrcIcon")
         .attr("data-htrc-id", function(d) { return d; })
         .attr("onclick", function(d) { return (d) ? "htrc.popover(this)" : ""; });
     ticks.append("svg:image")
@@ -477,14 +480,14 @@ d3.json(url, function(error, data) {
           $("text:contains(" + d.doc +")")
             .filter(function() {return $(this).text().trim() == d.doc })
             .attr("font-weight", "bold")
-            .next(".sepIcon").css('opacity', '1.0')
+            .next(".htrcIcon").css('opacity', '1.0')
             .next(".linkIcon").css('opacity', '1.0');
         })
       .on("mouseout", function(d) {
           $("text:contains(" + d.doc +")")
             .filter(function() {return $(this).text().trim() == d.doc })
             .attr("font-weight", "normal")
-            .next(".sepIcon").css('opacity', '')
+            .next(".htrcIcon").css('opacity', '')
             .next(".linkIcon").css('opacity', '');
         });
 
@@ -618,7 +621,7 @@ d3.json(url, function(error, data) {
       $('#controls').css({'position': 'fixed', 'top' : legendHeight + heightFac});
     }}
    
-  $('.sepIcon').tooltip({placement: 'top', title: 'Click for the HathiTrust Details.', container: 'body', html: true, animation: false});
+  $('.htrcIcon').tooltip({placement: 'top', title: 'Click for the HathiTrust Details.', container: 'body', html: true, animation: false});
   $('.linkIcon').tooltip({placement: 'top', title: 'Click to refocus the Topic Explorer on this document.', container: 'body', html: true, animation: false});
 }); });
 
