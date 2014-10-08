@@ -1,6 +1,8 @@
 import csv
 from datetime import datetime, timedelta
+from HTMLParser import HTMLParser
 import json
+import re
 from StringIO import StringIO
 
 from vsm.corpus import Corpus
@@ -60,9 +62,9 @@ def topic_json(topic_no, N=40):
         pass
 
     if N > 0:
-        data = lda_v.sim_top_doc([int(topic_no)])[:N]
+        data = lda_v.dist_top_doc([int(topic_no)])[:N]
     else:
-        data = lda_v.sim_top_doc([int(topic_no)])[N:]
+        data = lda_v.dist_top_doc([int(topic_no)])[N:]
         data = reversed(data)
     
     md = lda_c.view_metadata('book')
@@ -88,9 +90,9 @@ def doc_topics(doc_id, N=40):
     response.content_type = 'application/json; charset=UTF8'
 
     if N > 0:
-        data = lda_v.sim_doc_doc(doc_id)[:N]
+        data = lda_v.dist_doc_doc(doc_id)[:N]
     else:
-        data = lda_v.sim_doc_doc(doc_id)[N:]
+        data = lda_v.dist_doc_doc(doc_id)[N:]
         data = reversed(data)
     
     md = lda_c.view_metadata('book')
@@ -128,11 +130,13 @@ def docs():
     md = lda_c.view_metadata('book')
     ids = md['book_label']
     labels = htrc_label_fn_1315(md)
+    label = dict(zip(ids,labels))
+
     js = list()
-    for id, title in zip(ids,labels):
+    for id in ids:
         js.append({
             'id': id,
-            'label' : title
+            'label' : labels.get(id, id)
         })
 
     return json.dumps(js)
