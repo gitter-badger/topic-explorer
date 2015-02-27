@@ -74,7 +74,7 @@ while not high_filter:
     for count in bin_counts:
         print "%10.0f" % count,
     print "\n"
-    print counts.sum(), "total words"
+    print counts.sum(), "tokens,", len(counts), "words"
 
     input_filter = 0
     while not input_filter:
@@ -82,9 +82,11 @@ while not high_filter:
             input_filter = int(raw_input("Enter a top filter: "))
             candidates = c.words[items[:,0][counts > input_filter][counts[counts > input_filter].argsort()[::-1]]]
 
-            print counts[counts > input_filter].sum(), "Words"
+            print counts[counts > input_filter].sum(), "tokens,",\
+                len(counts[counts > input_filter]), "words"
             print ' '.join(candidates)
-            print counts[counts > input_filter].sum(), "Words"
+            print counts[counts > input_filter].sum(), "tokens,",\
+                len(counts[counts > input_filter]), "words"
 
             accept = None
             while accept not in ['y', 'n', 'c']:
