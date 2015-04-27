@@ -1,4 +1,5 @@
 from ConfigParser import RawConfigParser as ConfigParser
+import logging
 import os
 import os.path
 import shutil
@@ -6,6 +7,7 @@ import sys
 
 from vsm.corpus import Corpus
 from vsm.corpus.util.corpusbuilders import coll_corpus, dir_corpus, toy_corpus
+from vsm.extensions.corpuscleanup import * 
 
 from topicexplorer.lib import pdf, util
 
@@ -28,6 +30,15 @@ def get_corpus_filename(corpus_path, model_path, nltk_stop=True, stop_freq=1,
 
 def build_corpus(corpus_path, model_path, nltk_stop=True, stop_freq=1,
     context_type='document', ignore=['.json','.log','.err','.pickle','.npz']):
+
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
+    log_file = os.path.join(corpus_path + '-raw-proc.log')
+    handler = logging.FileHandler(log_file, mode='w')
+    handler.setLevel(logging.DEBUG)
+    formatter = logging.Formatter('%(asctime)s %(message)s')
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
    
     # pre-process PDF files
     if corpus_path[-4:] == '.pdf' or util.contains_pattern(corpus_path, '*.pdf'):
@@ -61,14 +72,18 @@ def build_corpus(corpus_path, model_path, nltk_stop=True, stop_freq=1,
 
         if count_files > 0 and count_dirs == 0:
             print "Constructing directory corpus, each file is a document"
+            reconstruct_words(corpus_path, logger)
             c = dir_corpus(corpus_path, nltk_stop=nltk_stop,
                            stop_freq=stop_freq, chunk_name=context_type,
-                           ignore=ignore)
+                           ignore=ignore, file_metadata=True)
         elif count_dirs > 0 and count_files == 0:
             print "Constructing collection corpus, each folder is a document"
             context_type='book'
+            for doc in os.listdir(corpus_path):
+                reconstruct_words(corpus_path, logger)
             c = coll_corpus(corpus_path, nltk_stop=nltk_stop,
-                            stop_freq=stop_freq, ignore=ignore)
+                            stop_freq=stop_freq, ignore=ignore, 
+                            file_metadata=True)
         else:
             raise IOError("Invalid Path: empty directory")
     else:

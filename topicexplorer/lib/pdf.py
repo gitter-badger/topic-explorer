@@ -10,6 +10,7 @@ from pdfminer.psparser import PSException
 import os.path
 from glob import glob
 from codecs import open
+import struct
 
 from topicexplorer.lib import util
 
@@ -44,7 +45,7 @@ def convert_and_write(fname, output_dir=None, overwrite=False, verbose=False):
     if output_dir is not None and not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    if overwrite or util.overwrite_prompt(output):
+    if not os.path.exists(output):
         with open(output, 'wb') as outfile:
             outfile.write(convert(fname))
             if verbose:
@@ -62,9 +63,11 @@ def main(path_or_paths, output_dir=None, verbose=1):
                                    maxval=num_files).start()
             for file_n, pdffile in enumerate(util.find_files(p, '*.pdf')):
                 try:
-                    convert_and_write(pdffile, output_dir, overwrite=True)
+                    convert_and_write(pdffile, output_dir, overwrite=False)
                 except (PDFException, PSException):
                     print "Skipping {0} due to PDF Exception".format(pdffile)
+                except struct.error:
+                    print "Skipping {0} due to struct error".format(pdffile)
 
                 if verbose == 1:
                     pbar.update(file_n)
