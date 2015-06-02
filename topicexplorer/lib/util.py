@@ -2,9 +2,10 @@
 topicexplorer.lib.util contains some helper functions for command prompts, argparse, and globing
 """
 
+from glob import glob
 import os, fnmatch
 import os.path
-from glob import glob
+import platform
 
 def is_valid_filepath(parser, arg):
     if not os.path.exists(arg):
@@ -12,6 +13,17 @@ def is_valid_filepath(parser, arg):
     else:
         return arg
 
+## Platform-independent command escape
+## see http://stackoverflow.com/a/29597408
+if platform.system() == 'windows':
+    from subprocess import list2cmdline
+    quote_args = list2cmdline
+else:
+    # POSIX
+    from pipes import quote
+
+    def quote_args(seq):
+        return ' '.join(quote(arg) for arg in seq)
 
 ## Command Line Prompts
 def overwrite_prompt(filename, default=True):
@@ -106,3 +118,4 @@ def isint(x):
         return True
     except (ValueError, TypeError):
         return False
+
