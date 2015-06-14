@@ -73,6 +73,7 @@ def main():
         help="Configuration file path")
     parser_serve.add_argument('-k', type=int, required=True,
         help="Number of Topics")
+    parser_serve.add_argument('-d', dest='daemon', action='store_true')
     parser_serve.add_argument('-p', dest='port', type=int, 
         help="Port Number", default=None)
     parser_serve.add_argument('--host', default=None, help='Hostname')

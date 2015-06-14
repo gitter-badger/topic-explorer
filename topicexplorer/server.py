@@ -425,16 +425,16 @@ def main(args):
     def send_static(filename):
         return static_file(filename, root=resource_filename(__name__, '../www/'))
 
-    if args.ssl or config.get('main', 'ssl'):
+    # start server
+    if not args.daemon and (args.ssl or config.get('main', 'ssl')):
         certfile = args.certfile or config.get('ssl', 'certfile')
         keyfile = args.keyfile or config.get('ssl', 'keyfile')
         ca_certs = args.ca_certs or config.get('ssl', 'ca_certs')
 
         run(host=host, port=port, server=SSLWSGIRefServer,
             certfile=certfile, keyfile=keyfile, ca_certs=ca_certs)
-    else:
+    elif not args.daemon:
         run(host=host, port=port)
-
 
 if __name__ == '__main__':
     from argparse import ArgumentParser
@@ -453,6 +453,8 @@ if __name__ == '__main__':
         help="Number of Topics")
     parser.add_argument('-p', dest='port', type=int, 
         help="Port Number", default=None)
+    parser.add_argument('-d', dest='daemon', action='store_true', 
+        help="WSGI Daemon mode (do not start server)")
     parser.add_argument('--host', default=None, help='Hostname')
     parser.add_argument('--ssl', action='store_true',
         help="Use SSL (must specify certfile, keyfile, and ca_certs in config)")
